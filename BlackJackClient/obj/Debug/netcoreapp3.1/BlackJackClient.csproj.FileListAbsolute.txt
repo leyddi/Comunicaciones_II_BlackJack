@@ -1,0 +1,15 @@
+C:\Users\lborjasz\source\repos\BlackJack\BlackJackClient\bin\Debug\netcoreapp3.1\BlackJackClient.exe
+C:\Users\lborjasz\source\repos\BlackJack\BlackJackClient\bin\Debug\netcoreapp3.1\BlackJackClient.deps.json
+C:\Users\lborjasz\source\repos\BlackJack\BlackJackClient\bin\Debug\netcoreapp3.1\BlackJackClient.runtimeconfig.json
+C:\Users\lborjasz\source\repos\BlackJack\BlackJackClient\bin\Debug\netcoreapp3.1\BlackJackClient.runtimeconfig.dev.json
+C:\Users\lborjasz\source\repos\BlackJack\BlackJackClient\bin\Debug\netcoreapp3.1\BlackJackClient.dll
+C:\Users\lborjasz\source\repos\BlackJack\BlackJackClient\bin\Debug\netcoreapp3.1\BlackJackClient.pdb
+C:\Users\lborjasz\source\repos\BlackJack\BlackJackClient\obj\Debug\netcoreapp3.1\BlackJackClient.csprojAssemblyReference.cache
+C:\Users\lborjasz\source\repos\BlackJack\BlackJackClient\obj\Debug\netcoreapp3.1\BlackJackClient.AssemblyInfoInputs.cache
+C:\Users\lborjasz\source\repos\BlackJack\BlackJackClient\obj\Debug\netcoreapp3.1\BlackJackClient.AssemblyInfo.cs
+C:\Users\lborjasz\source\repos\BlackJack\BlackJackClient\obj\Debug\netcoreapp3.1\BlackJackClient.csproj.CoreCompileInputs.cache
+C:\Users\lborjasz\source\repos\BlackJack\BlackJackClient\obj\Debug\netcoreapp3.1\BlackJackClient.dll
+C:\Users\lborjasz\source\repos\BlackJack\BlackJackClient\obj\Debug\netcoreapp3.1\BlackJackClient.pdb
+C:\Users\lborjasz\source\repos\BlackJack\BlackJackClient\obj\Debug\netcoreapp3.1\BlackJackClient.genruntimeconfig.cache
+C:\Users\lborjasz\source\repos\BlackJack\BlackJackClient\bin\Debug\netcoreapp3.1\Newtonsoft.Json.dll
+C:\Users\lborjasz\source\repos\BlackJack\BlackJackClient\obj\Debug\netcoreapp3.1\BlackJackClient.csproj.CopyComplete

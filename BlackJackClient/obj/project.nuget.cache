@@ -1,0 +1,10 @@
+{
+  "version": 2,
+  "dgSpecHash": "yBHbG+5ZfWtSn0XrIB59T2rtq/6lwC57KhyV20m1+/CDiEK8oJVEGWuK72zrXxAWq7A728HFmB2f9VtcYkMW3w==",
+  "success": true,
+  "projectFilePath": "C:\\Users\\lborjasz\\source\\repos\\BlackJack\\BlackJackClient\\BlackJackClient.csproj",
+  "expectedPackageFiles": [
+    "C:\\Users\\lborjasz\\.nuget\\packages\\newtonsoft.json\\13.0.1\\newtonsoft.json.13.0.1.nupkg.sha512"
+  ],
+  "logs": []
+}
