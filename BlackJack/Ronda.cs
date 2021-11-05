@@ -10,5 +10,6 @@ namespace BlackJackServer
         public List<Cartas> Cartas { get; set; }
         public int Puntos { get; set; }
         public bool Plantado { get; set; } = false;
+        public int SumaMano { get; set; }
     }
 }

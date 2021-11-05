@@ -123,10 +123,10 @@ namespace BlackJackClient
                     if (mensaje.Tipo == EnumMessage.ValorMensaje.Pedir)
                     {
                         string[] valor = mensaje.Valor.Split("##");
-                        Console.WriteLine("Tus siguiente carta es: " + valor[1]);
 
                         Cartas carta = new Cartas { Valor = valor[1] };
                         cliente.Rondas.Find(x=> x.NumeroRonda==int.Parse(valor[0])).Cartas.Add(carta);
+                        Console.WriteLine("Tus siguiente carta es: " + valor[1] + ", tienes las siguientes cartas en mano: " + String.Join(",", cliente.Rondas[int.Parse(valor[0])].Cartas.Select(u => u.Valor)));
 
                     }
                     if (mensaje.Tipo == EnumMessage.ValorMensaje.NotificarTurno)

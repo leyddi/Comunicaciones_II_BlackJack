@@ -87,6 +87,11 @@ namespace BlackJackServer
                 BroadCastAll(mensajeEnviar);
 
                 Ronda();
+                Ronda();
+                Ronda();
+                Ronda();
+                Ronda();
+
 
             }
         }
@@ -112,6 +117,12 @@ namespace BlackJackServer
             string mensajeEnviar;
             Mensaje objMensajeEnviar;
 
+
+            Console.WriteLine("Ronda # "+ NumRonda);
+            objMensajeEnviar = new Mensaje { Tipo = EnumMessage.ValorMensaje.Comunicaciones, Valor = "Ronda # " + NumRonda };
+            mensajeEnviar = JsonConvert.SerializeObject(objMensajeEnviar);
+            BroadCastAll(mensajeEnviar);
+
             //SE GENERA LA PRIMERA CARTA PARA EL CREPIER
             Cartas cartasJugador = ExtraerCartaMazo();
             Ronda rondaServidor = new Ronda {
@@ -121,7 +132,7 @@ namespace BlackJackServer
             rondaServidor.Cartas.Add(cartasJugador);
             RondasCrepier.Add(rondaServidor);
 
-            Console.WriteLine("Carta Crepier" + cartasJugador.Valor);
+            Console.WriteLine("Carta Crepier : " + cartasJugador.Valor);
             objMensajeEnviar = new Mensaje { Tipo = EnumMessage.ValorMensaje.Comunicaciones, Valor = "Carta Crepier "+ cartasJugador.Valor };
             mensajeEnviar = JsonConvert.SerializeObject(objMensajeEnviar);
             BroadCastAll(mensajeEnviar);
@@ -161,12 +172,126 @@ namespace BlackJackServer
                 j++;
             }
 
+            while (SumaMano(RondasCrepier[NumRonda]) < 17)
+            {
+                cartasJugador = ExtraerCartaMazo();
+                Console.WriteLine("Carta Crepier " + cartasJugador.Valor);
+                RondasCrepier[NumRonda].Cartas.Add(cartasJugador);
+            }
+
             Console.WriteLine("Finalizó la entrega de cartas");
             objMensajeEnviar = new Mensaje { Tipo = EnumMessage.ValorMensaje.Comunicaciones, Valor = "Finalizó la entrega de cartas" };
             mensajeEnviar = JsonConvert.SerializeObject(objMensajeEnviar);
             BroadCastAll(mensajeEnviar);
-        }
 
+
+            int max = 0;
+            int k = 0;
+            foreach (Cliente cliente in Clientes)
+            {
+                Clientes[k].Rondas[NumRonda].SumaMano = SumaMano(cliente.Rondas[NumRonda]);
+
+                Console.WriteLine(Clientes[k].Usuario+" tiene en su mano " + Clientes[k].Rondas[NumRonda].SumaMano + " sus cartas son: " + string.Join(",", Clientes[k].Rondas[NumRonda].Cartas.Select(u => u.Valor)));
+                objMensajeEnviar = new Mensaje { Tipo = EnumMessage.ValorMensaje.Comunicaciones, Valor = Clientes[k].Usuario + " tiene en su mano " + Clientes[k].Rondas[NumRonda].SumaMano + " sus cartas son: " + string.Join(",", Clientes[k].Rondas[NumRonda].Cartas.Select(u => u.Valor)) };
+                mensajeEnviar = JsonConvert.SerializeObject(objMensajeEnviar);
+                BroadCastAll(mensajeEnviar);
+
+                if (Clientes[k].Rondas[NumRonda].SumaMano > max && Clientes[k].Rondas[NumRonda].SumaMano<22) {
+                    max = Clientes[k].Rondas[NumRonda].SumaMano;
+                }
+                k++;
+            }
+            RondasCrepier[NumRonda].SumaMano = SumaMano(RondasCrepier[NumRonda]);
+
+            Console.WriteLine("Casa tiene en su mano " + RondasCrepier[NumRonda].SumaMano + " sus cartas son: " + string.Join(",", RondasCrepier[NumRonda].Cartas.Select(u => u.Valor)));
+            objMensajeEnviar = new Mensaje { Tipo = EnumMessage.ValorMensaje.Comunicaciones, Valor = "Casa tiene en su mano " + RondasCrepier[NumRonda].SumaMano + " sus cartas son: " + string.Join(",", RondasCrepier[NumRonda].Cartas.Select(u => u.Valor)) };
+            mensajeEnviar = JsonConvert.SerializeObject(objMensajeEnviar);
+            BroadCastAll(mensajeEnviar);
+
+            if (SumaMano(RondasCrepier[NumRonda]) >= max && SumaMano(RondasCrepier[NumRonda])<22)
+            {
+                max = SumaMano(RondasCrepier[NumRonda]);
+                Console.WriteLine("Gana la casa con "+ max );
+                objMensajeEnviar = new Mensaje { Tipo = EnumMessage.ValorMensaje.Comunicaciones, Valor = "Gana la casa con " + max };
+                mensajeEnviar = JsonConvert.SerializeObject(objMensajeEnviar);
+                BroadCastAll(mensajeEnviar);
+                RondasCrepier[NumRonda].Puntos = 1;
+            }
+
+
+            for (int p = 0; p < Clientes.Count(); p++) {
+                if (Clientes[p].Rondas[NumRonda].SumaMano==max) {
+                    Clientes[p].Rondas[NumRonda].Puntos = 1;
+                    Console.WriteLine("Gana el usuario "+ Clientes[p].Usuario);
+                    objMensajeEnviar = new Mensaje { Tipo = EnumMessage.ValorMensaje.Comunicaciones, Valor = "Gana el usuario " + Clientes[p].Usuario };
+                    mensajeEnviar = JsonConvert.SerializeObject(objMensajeEnviar);
+                    BroadCastAll(mensajeEnviar);
+                }
+            }
+
+
+
+            NumRonda++;
+        }
+        public static int SumaMano(Ronda ronda) {
+            int suma = 0;
+            int countA = 0;
+
+            foreach (Cartas cartas in ronda.Cartas) {
+                if (cartas.Valor.Contains("J") || cartas.Valor.Contains("Q") || cartas.Valor.Contains("K"))
+                {
+                    suma = suma + 10;
+                }
+                else if (cartas.Valor.Contains("A"))
+                {
+                    countA++;
+                }
+                else {
+                    suma = suma + int.Parse(cartas.Valor);
+                }
+            }
+
+            if (countA == 1) {
+                if ((suma + 11) < 22)
+                {
+                    suma = suma + 11;
+                }
+                else {
+                    suma = suma + 1;
+                }
+            }
+
+            if (countA == 2)
+            {
+                if ((suma + 11 + 11) < 22)
+                {
+                    suma = suma + 11 + 11;
+                }
+                else if ((suma + 11 + 1) < 22)
+                {
+                    suma = suma + 11 + 1;
+                }
+                else
+                {
+                    suma = suma + 1 + 1;
+                }
+            }
+
+            if (countA == 3)
+            {
+
+                if ((suma + 11 + 1 + 1) < 22)
+                {
+                    suma = suma + 11 + 1 + 1;
+                }
+                else
+                {
+                    suma = suma + 1 + 1 + 1;
+                }
+            }
+
+            return suma;
+        }
         public static void PedirCarta(Cliente cliente) {
             Cartas cartasJugador = ExtraerCartaMazo();
             string mensajeEnviar;
@@ -175,6 +300,8 @@ namespace BlackJackServer
             objMensajeEnviar = new Mensaje { Tipo = EnumMessage.ValorMensaje.Pedir, Valor = NumRonda + "##" + cartasJugador.Valor};
             mensajeEnviar = JsonConvert.SerializeObject(objMensajeEnviar);
             Unicast(mensajeEnviar, cliente.tcpClient);
+
+            Clientes.Find(x => x.tcpClient.Client.RemoteEndPoint == cliente.tcpClient.Client.RemoteEndPoint).Rondas[NumRonda].Cartas.Add(cartasJugador);
 
             objMensajeEnviar = new Mensaje { Tipo = EnumMessage.ValorMensaje.NotificarTurno, Valor = NumRonda.ToString() };
             mensajeEnviar = JsonConvert.SerializeObject(objMensajeEnviar);
