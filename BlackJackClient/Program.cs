@@ -29,19 +29,19 @@ namespace BlackJackClient
                 Console.WriteLine("Ingresa tu nombre de jugador: ");
                 string usuario = Console.ReadLine();
                 cliente.Usuario = usuario;
+                Console.WriteLine("Ingresa número de mesa: ");
+                string mesa = Console.ReadLine();
 
                 Console.WriteLine("");
                 Console.WriteLine("Espera un momento... ");
 
-                Thread.Sleep(2000);
 
                 tcpClient = new TcpClient(ip, int.Parse(puerto));
 
                 Console.WriteLine("");
                 Console.WriteLine("Se ha establecido la conexión con el servidor");
 
-                Console.WriteLine("Ingresa número de mesa: ");
-                string mesa = Console.ReadLine();
+                
 
                 Thread thread = new Thread(Read);
                 thread.Start(tcpClient);

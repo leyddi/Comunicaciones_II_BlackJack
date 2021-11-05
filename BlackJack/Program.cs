@@ -92,7 +92,46 @@ namespace BlackJackServer
                 Ronda();
                 Ronda();
 
+                Console.WriteLine("Ha Finalizado las rondas, se realizará el conteo de puntos");
+                objMensajeEnviar = new Mensaje { Tipo = EnumMessage.ValorMensaje.Comunicaciones, Valor = "Inicia el Juego " };
+                mensajeEnviar = JsonConvert.SerializeObject(objMensajeEnviar);
+                BroadCastAll(mensajeEnviar);
 
+
+                EncontrarGanador();
+
+            }
+        }
+
+        public static void EncontrarGanador() {
+            var max = 0;
+            string mensajeEnviar;
+            Mensaje objMensajeEnviar;
+            for (int i = 0; i < Clientes.Count(); i++) {
+                if (Clientes[i].Rondas.Sum(x => x.Puntos) > max) {
+                    max = Clientes[i].Rondas.Sum(x => x.Puntos);
+                }
+            }
+
+            if (RondasCrepier.Sum(x => x.Puntos) >= max)
+            {
+                max = RondasCrepier.Sum(x => x.Puntos);
+                Console.WriteLine("GANA LA CASA");
+                objMensajeEnviar = new Mensaje { Tipo = EnumMessage.ValorMensaje.Comunicaciones, Valor = "GANA LA CASA CON "+ max + " PUNTOS" };
+                mensajeEnviar = JsonConvert.SerializeObject(objMensajeEnviar);
+                BroadCastAll(mensajeEnviar);
+            }
+
+            for (int i = 0; i < Clientes.Count(); i++)
+            {
+                if (Clientes[i].Rondas.Sum(x => x.Puntos) == max)
+                {
+                    Console.WriteLine("GANADOR "+ Clientes[i].Usuario);
+                    objMensajeEnviar = new Mensaje { Tipo = EnumMessage.ValorMensaje.Comunicaciones, Valor = "GANADOR " + Clientes[i].Usuario + " CON " + max + " PUNTOS" };
+                    mensajeEnviar = JsonConvert.SerializeObject(objMensajeEnviar);
+                    BroadCastAll(mensajeEnviar);
+
+                }
             }
         }
         public static Cartas ExtraerCartaMazo() {
@@ -162,6 +201,11 @@ namespace BlackJackServer
                 Unicast(mensajeEnviar, cliente.tcpClient);
                 i++;
             }
+
+            cartasJugador = ExtraerCartaMazo();
+            Console.WriteLine("Carta Crepier " + cartasJugador.Valor);
+            RondasCrepier[NumRonda].Cartas.Add(cartasJugador);
+
             int j = 0;
             foreach (Cliente cliente in Clientes)
             {
