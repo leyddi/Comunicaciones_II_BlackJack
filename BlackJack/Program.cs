@@ -7,13 +7,13 @@ using System.Net.Sockets;
 using System.Threading;
 using System.IO;
 using Newtonsoft.Json;
+using System.Runtime.Serialization;
 
 namespace BlackJackServer
 {
     class Program
     {
-        private static TcpListener tcpListener;
-        
+        private static TcpListener tcpListener;        
 
         //private static List<TcpClient> tcpClientsList = new List<TcpClient>();
         private static string Mesa;
@@ -21,13 +21,15 @@ namespace BlackJackServer
         private static bool closeMoreClients = false;
         private static DateTime fechaPrevioInicio;
         private static System.Timers.Timer aTimer = new System.Timers.Timer();
+        private static List<Cartas> Mazo = new List<Cartas>();
+        private static List<Ronda> RondasCrepier = new List<Ronda>();
+        private static int NumRonda = 0;
 
         static void Main(string[] args)
         {
 
-            
 
-            Random r = new Random();
+            GenerarMazo();
             Console.WriteLine("BIENVENIDO A BLACK JACK - MODO SERVIDOR.");
             Console.WriteLine("Deberás completar ciertos datos para poder iniciar el juego");
             Console.WriteLine("");
@@ -83,7 +85,123 @@ namespace BlackJackServer
                 Mensaje objMensajeEnviar = new Mensaje { Tipo = EnumMessage.ValorMensaje.Comunicaciones, Valor = "Inicia el Juego " };
                 string mensajeEnviar = JsonConvert.SerializeObject(objMensajeEnviar);
                 BroadCastAll(mensajeEnviar);
+
+                Ronda();
+
             }
+        }
+        public static Cartas ExtraerCartaMazo() {
+            Random r = new Random();
+            
+            int numero = r.Next(0, 48);
+            while (Mazo[numero].Entregada) {
+                numero = r.Next(0, 48);
+            }
+            Cartas cartas = new Cartas { 
+            Entregada = true,
+            Palo = Mazo[numero].Palo,
+            Valor = Mazo[numero].Valor
+            };
+            Mazo[numero].Entregada = true;
+
+                return cartas;
+        }
+
+        public static void Ronda()
+        {
+            string mensajeEnviar;
+            Mensaje objMensajeEnviar;
+
+            //SE GENERA LA PRIMERA CARTA PARA EL CREPIER
+            Cartas cartasJugador = ExtraerCartaMazo();
+            Ronda rondaServidor = new Ronda {
+                NumeroRonda = NumRonda
+            };
+            rondaServidor.Cartas = new List<Cartas>();
+            rondaServidor.Cartas.Add(cartasJugador);
+            RondasCrepier.Add(rondaServidor);
+
+            Console.WriteLine("Carta Crepier" + cartasJugador.Valor);
+            objMensajeEnviar = new Mensaje { Tipo = EnumMessage.ValorMensaje.Comunicaciones, Valor = "Carta Crepier "+ cartasJugador.Valor };
+            mensajeEnviar = JsonConvert.SerializeObject(objMensajeEnviar);
+            BroadCastAll(mensajeEnviar);
+
+            int i = 0;
+            foreach (Cliente cliente in Clientes) {
+                Ronda ronda = new Ronda();
+                ronda.Cartas = new List<Cartas>();
+
+                if (Clientes[i].Rondas == null)
+                {
+                    Clientes[i].Rondas = new List<Ronda>();
+                }
+
+                //PRIMERA CARTA
+                cartasJugador = ExtraerCartaMazo();
+                ronda.Cartas.Add(cartasJugador);
+
+                //SEGUNDA CARTA
+                Cartas cartasJugador2 = ExtraerCartaMazo();
+                ronda.Cartas.Add(cartasJugador2);
+
+                Clientes[i].Rondas.Add(ronda);
+
+                objMensajeEnviar = new Mensaje { Tipo = EnumMessage.ValorMensaje.MisPrimerasDosCartas, Valor = NumRonda+"##"+cartasJugador.Valor+"##"+cartasJugador2.Valor };
+                mensajeEnviar = JsonConvert.SerializeObject(objMensajeEnviar);
+                Unicast(mensajeEnviar, cliente.tcpClient);
+                i++;
+            }
+            int j = 0;
+            foreach (Cliente cliente in Clientes)
+            {
+                objMensajeEnviar = new Mensaje { Tipo = EnumMessage.ValorMensaje.NotificarTurno, Valor = NumRonda.ToString()};
+                mensajeEnviar = JsonConvert.SerializeObject(objMensajeEnviar);
+                Unicast(mensajeEnviar, cliente.tcpClient);
+                while (Clientes[j].Rondas[NumRonda].Plantado) {
+                    
+                }
+                j++;
+            }
+        }
+
+        public static void PedirCarta(Cliente cliente) {
+            Cartas cartasJugador = ExtraerCartaMazo();
+            string mensajeEnviar;
+            Mensaje objMensajeEnviar;
+
+            objMensajeEnviar = new Mensaje { Tipo = EnumMessage.ValorMensaje.Pedir, Valor = NumRonda + "##" + cartasJugador.Valor};
+            mensajeEnviar = JsonConvert.SerializeObject(objMensajeEnviar);
+            Unicast(mensajeEnviar, cliente.tcpClient);
+        }
+
+        public static void GenerarMazo() {
+
+            foreach (EnumPalo palo in (EnumPalo[])Enum.GetValues(typeof(EnumPalo))) {
+                foreach (EnumCartas cartas in (EnumCartas[])Enum.GetValues(typeof(EnumCartas))) {
+                    var enumType = typeof(EnumCartas);
+                    var str = GetEnumMemberAttrValue(enumType, cartas);
+
+                    Cartas Carta = new Cartas
+                    {
+                        Valor = str.ToString(),
+                        Palo = palo.ToString(),
+                        Entregada = false
+                        
+                    };
+                    Mazo.Add(Carta);
+                }
+            }
+        }
+        public static string GetEnumMemberAttrValue(Type enumType, object enumVal)
+        {
+            var memInfo = enumType.GetMember(enumVal.ToString());
+            var attr = memInfo[0].GetCustomAttributes(false).OfType<EnumMemberAttribute>().FirstOrDefault();
+            if (attr != null)
+            {
+                return attr.Value;
+            }
+
+            return null;
         }
         private static void OnTimedEvent(Object source, System.Timers.ElapsedEventArgs e)
         {
@@ -140,6 +258,17 @@ namespace BlackJackServer
 
                                 }
                             }
+                        }
+                        if (mensaje.Tipo == EnumMessage.ValorMensaje.Pedir)
+                        {
+                            Console.WriteLine("El jugador " + Clientes.Find(x => x.tcpClient.Client.RemoteEndPoint == tcpClient.Client.RemoteEndPoint).Usuario + " ha pedido una nueva carta");
+
+                            PedirCarta(Clientes.Find(x => x.tcpClient.Client.RemoteEndPoint == tcpClient.Client.RemoteEndPoint));
+                        }
+                        if (mensaje.Tipo == EnumMessage.ValorMensaje.Plantar) {
+                            Console.WriteLine("El jugador " + Clientes.Find(x => x.tcpClient.Client.RemoteEndPoint == tcpClient.Client.RemoteEndPoint).Usuario + " se ha plantado");
+
+                            Clientes.Find(x => x.tcpClient.Client.RemoteEndPoint == tcpClient.Client.RemoteEndPoint).Rondas[NumRonda].Plantado = true;
                         }
                     }
                 }

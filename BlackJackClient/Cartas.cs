@@ -7,5 +7,6 @@ namespace BlackJackClient
     class Cartas
     {
         public string Valor { get; set; }
+
     }
 }

@@ -14,10 +14,11 @@ namespace BlackJackServer
             CartaCrepier = 2,
             MisPrimerasDosCartas = 3,
             OtrosJugadoresPrimerasDosCartas = 4,
-            Pedir = 5,
-            Plantar = 6,
-            Ganador = 7,
-            Perdedor = 8,
+            NotificarTurno = 5,
+            Pedir = 6,
+            Plantar = 7,
+            Ganador = 8,
+            Perdedor = 9,
             Comunicaciones = 99
         }
 

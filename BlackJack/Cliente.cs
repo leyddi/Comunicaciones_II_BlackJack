@@ -11,5 +11,6 @@ namespace BlackJackServer
         public string Ip { get; set; }
         public List<Ronda> Rondas { get; set; }
         public TcpClient tcpClient { get; set; }
+        
     }
 }

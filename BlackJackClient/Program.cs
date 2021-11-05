@@ -13,7 +13,8 @@ namespace BlackJackClient
     class Program
     {
         private static Cliente cliente = new Cliente();
-
+        private static TcpClient tcpClient;
+        private static StreamWriter sWriter;
         static void Main(string[] args)
         {
             try
@@ -34,7 +35,7 @@ namespace BlackJackClient
 
                 Thread.Sleep(2000);
 
-                TcpClient tcpClient = new TcpClient(ip, int.Parse(puerto));
+                tcpClient = new TcpClient(ip, int.Parse(puerto));
 
                 Console.WriteLine("");
                 Console.WriteLine("Se ha establecido la conexión con el servidor");
@@ -44,7 +45,7 @@ namespace BlackJackClient
 
                 Thread thread = new Thread(Read);
                 thread.Start(tcpClient);
-                StreamWriter sWriter = new StreamWriter(tcpClient.GetStream());
+                sWriter = new StreamWriter(tcpClient.GetStream());
                 //sWriter.WriteLine(mesa);
                 //sWriter.Flush();
 
@@ -64,17 +65,6 @@ namespace BlackJackClient
                 
 
                 }
-               // while (true){
-                    //if (tcpClient.Connected)
-                    //{
-                    //    //Solicitud de unirse
-                    //    sWriter.WriteLine(JsonConvert.SerializeObject(mensaje));
-                    //    sWriter.Flush();
-                        
-
-                    //}
-               // }
-
             }
             catch (Exception e)
             {
@@ -110,7 +100,55 @@ namespace BlackJackClient
                     {
                         cliente.Conectado = true;
                         Console.WriteLine("Bienvenido a la mesa, espera se unan mas participantes");
-                    }                   
+                    }
+                    if (mensaje.Tipo == EnumMessage.ValorMensaje.MisPrimerasDosCartas)
+                    {
+                        string[] valor = mensaje.Valor.Split("##");
+                        Console.WriteLine("Tus Primeras dos cartas son: "+ valor[1]+" , "+ valor[2] );
+                        if (cliente.Rondas == null) {
+                            cliente.Rondas = new List<Ronda>();
+                        }
+                        Ronda ronda = new Ronda { 
+                        NumeroRonda = int.Parse(valor[0])                        
+                        };
+
+                        ronda.Cartas = new List<Cartas>();
+                        Cartas carta = new Cartas {Valor = valor[1] };
+                        ronda.Cartas.Add(carta);
+                        carta = new Cartas { Valor = valor[2] };
+                        ronda.Cartas.Add(carta);
+
+                        cliente.Rondas.Add(ronda);
+                    }
+                    if (mensaje.Tipo == EnumMessage.ValorMensaje.NotificarTurno)
+                    {
+                        Console.WriteLine("¿Deseas Pedir (Ingresa Si) o Deseas Plantarte (Ingresa No)?");
+
+                        string respuesta = Console.ReadLine();
+                        respuesta = respuesta.ToLower();
+                        while (respuesta != "si" && respuesta != "no") {
+                            Console.WriteLine("Solo se admite Si o No como respuesta");
+                            respuesta = Console.ReadLine();
+                        }
+                        Mensaje mensajeEnviar;
+                        if (respuesta == "si")
+                        {
+                            mensajeEnviar = new Mensaje
+                            {
+                                Tipo = EnumMessage.ValorMensaje.Pedir,
+                                Valor = cliente.Rondas.Count()+ "##" + cliente.Usuario
+                            };
+                        }
+                        else {
+                            mensajeEnviar = new Mensaje
+                            {
+                                Tipo = EnumMessage.ValorMensaje.Plantar,
+                                Valor = cliente.Rondas.Count() + "##" + cliente.Usuario
+                            };
+                        }
+                        sWriter.WriteLine(JsonConvert.SerializeObject(mensajeEnviar));
+                        sWriter.Flush();
+                    }
                 }
                 catch (Exception e)
                 {
