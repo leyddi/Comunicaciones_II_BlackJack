@@ -157,11 +157,14 @@ namespace BlackJackServer
                 objMensajeEnviar = new Mensaje { Tipo = EnumMessage.ValorMensaje.NotificarTurno, Valor = NumRonda.ToString()};
                 mensajeEnviar = JsonConvert.SerializeObject(objMensajeEnviar);
                 Unicast(mensajeEnviar, cliente.tcpClient);
-                while (Clientes[j].Rondas[NumRonda].Plantado) {
-                    
-                }
+                while (!Clientes[j].Rondas[NumRonda].Plantado){ }
                 j++;
             }
+
+            Console.WriteLine("Finalizó la entrega de cartas");
+            objMensajeEnviar = new Mensaje { Tipo = EnumMessage.ValorMensaje.Comunicaciones, Valor = "Finalizó la entrega de cartas" };
+            mensajeEnviar = JsonConvert.SerializeObject(objMensajeEnviar);
+            BroadCastAll(mensajeEnviar);
         }
 
         public static void PedirCarta(Cliente cliente) {
@@ -170,6 +173,10 @@ namespace BlackJackServer
             Mensaje objMensajeEnviar;
 
             objMensajeEnviar = new Mensaje { Tipo = EnumMessage.ValorMensaje.Pedir, Valor = NumRonda + "##" + cartasJugador.Valor};
+            mensajeEnviar = JsonConvert.SerializeObject(objMensajeEnviar);
+            Unicast(mensajeEnviar, cliente.tcpClient);
+
+            objMensajeEnviar = new Mensaje { Tipo = EnumMessage.ValorMensaje.NotificarTurno, Valor = NumRonda.ToString() };
             mensajeEnviar = JsonConvert.SerializeObject(objMensajeEnviar);
             Unicast(mensajeEnviar, cliente.tcpClient);
         }

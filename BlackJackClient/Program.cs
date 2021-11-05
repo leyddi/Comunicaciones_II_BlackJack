@@ -120,13 +120,21 @@ namespace BlackJackClient
 
                         cliente.Rondas.Add(ronda);
                     }
+                    if (mensaje.Tipo == EnumMessage.ValorMensaje.Pedir)
+                    {
+                        string[] valor = mensaje.Valor.Split("##");
+                        Console.WriteLine("Tus siguiente carta es: " + valor[1]);
+
+                        Cartas carta = new Cartas { Valor = valor[1] };
+                        cliente.Rondas.Find(x=> x.NumeroRonda==int.Parse(valor[0])).Cartas.Add(carta);
+
+                    }
                     if (mensaje.Tipo == EnumMessage.ValorMensaje.NotificarTurno)
                     {
                         Console.WriteLine("¿Deseas Pedir (Ingresa Si) o Deseas Plantarte (Ingresa No)?");
 
                         string respuesta = Console.ReadLine();
-                        respuesta = respuesta.ToLower();
-                        while (respuesta != "si" && respuesta != "no") {
+                        while (!respuesta.ToLower().Contains("si") && !respuesta.ToLower().Contains("no")) {
                             Console.WriteLine("Solo se admite Si o No como respuesta");
                             respuesta = Console.ReadLine();
                         }
