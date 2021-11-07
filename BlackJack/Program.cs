@@ -14,8 +14,6 @@ namespace BlackJackServer
     class Program
     {
         private static TcpListener tcpListener;        
-
-        //private static List<TcpClient> tcpClientsList = new List<TcpClient>();
         private static string Mesa;
         private static List<Cliente> Clientes = new List<Cliente>();
         private static bool closeMoreClients = false;
@@ -57,21 +55,7 @@ namespace BlackJackServer
                 TcpClient tcpClient = tcpListener.AcceptTcpClient();
                     Cliente cliente = new Cliente();
                     cliente.tcpClient = tcpClient;
-                    Clientes.Add(cliente);
-
-
-                    if (Clientes.Count == 2)
-                    {
-                        Console.WriteLine("Se cierra la mesa en 20 Segundos:");
-                        fechaPrevioInicio = DateTime.Now;
-                        aTimer.Interval = 22000;
-
-                        // Hook up the Elapsed event for the timer. 
-                        aTimer.Elapsed += OnTimedEvent;
-                        // Start the timer
-                        aTimer.Enabled = true;
-
-                    }
+                    Clientes.Add(cliente);                   
                     Thread thread = new Thread(ClientListener);
                     thread.Start(tcpClient);
 
@@ -433,6 +417,19 @@ namespace BlackJackServer
                                     mensajeEnviar = JsonConvert.SerializeObject(objMensajeEnviar);
                                     Console.WriteLine("El jugador " + valores[0] + " se ha unido a la mesa");
                                     BroadCast(mensajeEnviar, tcpClient);
+
+                                    if (Clientes.Count == 2)
+                                    {
+                                        Console.WriteLine("Se cierra la mesa en 20 Segundos:");
+                                        fechaPrevioInicio = DateTime.Now;
+                                        aTimer.Interval = 21000;
+
+                                        // Hook up the Elapsed event for the timer. 
+                                        aTimer.Elapsed += OnTimedEvent;
+                                        // Start the timer
+                                        aTimer.Enabled = true;
+
+                                    }
 
                                 }
                             }
