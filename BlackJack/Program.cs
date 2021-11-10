@@ -183,6 +183,18 @@ namespace BlackJackServer
                 objMensajeEnviar = new Mensaje { Tipo = EnumMessage.ValorMensaje.MisPrimerasDosCartas, Valor = NumRonda+"##"+cartasJugador.Valor+"##"+cartasJugador2.Valor };
                 mensajeEnviar = JsonConvert.SerializeObject(objMensajeEnviar);
                 Unicast(mensajeEnviar, cliente.tcpClient);
+
+
+                Console.WriteLine("Jugador " + cliente.Usuario + " recibe la carta " + cartasJugador.Valor);
+                objMensajeEnviar = new Mensaje { Tipo = EnumMessage.ValorMensaje.Comunicaciones, Valor = "Jugador "+cliente.Usuario+" recibe la carta " + cartasJugador.Valor };
+                mensajeEnviar = JsonConvert.SerializeObject(objMensajeEnviar);
+                BroadCast(mensajeEnviar,cliente.tcpClient);
+
+                Console.WriteLine("Jugador " + cliente.Usuario + " recibe la carta " + cartasJugador2.Valor);
+                objMensajeEnviar = new Mensaje { Tipo = EnumMessage.ValorMensaje.Comunicaciones, Valor = "Jugador " + cliente.Usuario + " recibe la carta " + cartasJugador2.Valor };
+                mensajeEnviar = JsonConvert.SerializeObject(objMensajeEnviar);
+                BroadCast(mensajeEnviar, cliente.tcpClient);
+
                 i++;
             }
 
@@ -197,6 +209,10 @@ namespace BlackJackServer
                 mensajeEnviar = JsonConvert.SerializeObject(objMensajeEnviar);
                 Unicast(mensajeEnviar, cliente.tcpClient);
                 while (!Clientes[j].Rondas[NumRonda].Plantado){ }
+                Console.WriteLine("Jugador " + cliente.Usuario + " se ha plantado ");
+                objMensajeEnviar = new Mensaje { Tipo = EnumMessage.ValorMensaje.Comunicaciones, Valor = "Jugador " + cliente.Usuario + " se ha plantado " };
+                mensajeEnviar = JsonConvert.SerializeObject(objMensajeEnviar);
+                BroadCast(mensajeEnviar, cliente.tcpClient);
                 j++;
             }
 
@@ -329,6 +345,12 @@ namespace BlackJackServer
             mensajeEnviar = JsonConvert.SerializeObject(objMensajeEnviar);
             Unicast(mensajeEnviar, cliente.tcpClient);
 
+
+            Console.WriteLine("Jugador " + cliente.Usuario + " ha pedido una carta ");
+            objMensajeEnviar = new Mensaje { Tipo = EnumMessage.ValorMensaje.Comunicaciones, Valor = "Jugador " + cliente.Usuario + " ha pedido una carta " };
+            mensajeEnviar = JsonConvert.SerializeObject(objMensajeEnviar);
+            BroadCast(mensajeEnviar, cliente.tcpClient);
+
             Clientes.Find(x => x.tcpClient.Client.RemoteEndPoint == cliente.tcpClient.Client.RemoteEndPoint).Rondas[NumRonda].Cartas.Add(cartasJugador);
 
             objMensajeEnviar = new Mensaje { Tipo = EnumMessage.ValorMensaje.NotificarTurno, Valor = NumRonda.ToString() };
@@ -436,12 +458,12 @@ namespace BlackJackServer
                         }
                         if (mensaje.Tipo == EnumMessage.ValorMensaje.Pedir)
                         {
-                            Console.WriteLine("El jugador " + Clientes.Find(x => x.tcpClient.Client.RemoteEndPoint == tcpClient.Client.RemoteEndPoint).Usuario + " ha pedido una nueva carta");
+                            //Console.WriteLine("El jugador " + Clientes.Find(x => x.tcpClient.Client.RemoteEndPoint == tcpClient.Client.RemoteEndPoint).Usuario + " ha pedido una nueva carta");
 
                             PedirCarta(Clientes.Find(x => x.tcpClient.Client.RemoteEndPoint == tcpClient.Client.RemoteEndPoint));
                         }
                         if (mensaje.Tipo == EnumMessage.ValorMensaje.Plantar) {
-                            Console.WriteLine("El jugador " + Clientes.Find(x => x.tcpClient.Client.RemoteEndPoint == tcpClient.Client.RemoteEndPoint).Usuario + " se ha plantado");
+                            //Console.WriteLine("El jugador " + Clientes.Find(x => x.tcpClient.Client.RemoteEndPoint == tcpClient.Client.RemoteEndPoint).Usuario + " se ha plantado");
 
                             Clientes.Find(x => x.tcpClient.Client.RemoteEndPoint == tcpClient.Client.RemoteEndPoint).Rondas[NumRonda].Plantado = true;
                         }
