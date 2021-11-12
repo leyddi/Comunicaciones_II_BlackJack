@@ -8,6 +8,7 @@ using System.Threading;
 using System.IO;
 using Newtonsoft.Json;
 using System.Runtime.Serialization;
+using System.Diagnostics;
 
 namespace BlackJackServer
 {
@@ -36,7 +37,6 @@ namespace BlackJackServer
 
             Console.WriteLine("Crea un número de mesa: " );
             Mesa = Console.ReadLine();
-
 
             tcpListener = new TcpListener(IPAddress.Any, 5000);
             tcpListener.Start();
@@ -99,6 +99,18 @@ namespace BlackJackServer
 
 
                 EncontrarGanador();
+
+                //Termina el proceso de los clientes
+                foreach (Process proceso in Process.GetProcesses())
+                {
+                    if (proceso.ProcessName == "BlackJackClient")
+                    {
+                        proceso.Kill();
+                    }
+                }
+
+                //Termina el proceso del servidor
+                Environment.Exit(0);
 
             }
         }

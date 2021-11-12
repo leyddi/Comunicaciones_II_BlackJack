@@ -1,10 +1,10 @@
 {
   "version": 2,
-  "dgSpecHash": "yBHbG+5ZfWtSn0XrIB59T2rtq/6lwC57KhyV20m1+/CDiEK8oJVEGWuK72zrXxAWq7A728HFmB2f9VtcYkMW3w==",
+  "dgSpecHash": "k4naCrx03IS7pGmO0PR0+npzajCKf60slaXE7qIN0TsJsqR+C1L91Dwcz++y8sUQqh3FFnc+zQq9MzIBLhfECg==",
   "success": true,
-  "projectFilePath": "C:\\Users\\lborjasz\\source\\repos\\BlackJack\\BlackJackClient\\BlackJackClient.csproj",
+  "projectFilePath": "C:\\Users\\anton\\Desktop\\Comunicaciones VS\\Comunicaciones_II_BlackJack\\BlackJackClient\\BlackJackClient.csproj",
   "expectedPackageFiles": [
-    "C:\\Users\\lborjasz\\.nuget\\packages\\newtonsoft.json\\13.0.1\\newtonsoft.json.13.0.1.nupkg.sha512"
+    "C:\\Users\\anton\\.nuget\\packages\\newtonsoft.json\\13.0.1\\newtonsoft.json.13.0.1.nupkg.sha512"
   ],
   "logs": []
 }

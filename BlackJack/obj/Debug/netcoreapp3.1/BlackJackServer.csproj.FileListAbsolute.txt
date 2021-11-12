@@ -13,3 +13,18 @@ C:\Users\lborjasz\source\repos\BlackJack\BlackJack\obj\Debug\netcoreapp3.1\Black
 C:\Users\lborjasz\source\repos\BlackJack\BlackJack\obj\Debug\netcoreapp3.1\BlackJackServer.csprojAssemblyReference.cache
 C:\Users\lborjasz\source\repos\BlackJack\BlackJack\bin\Debug\netcoreapp3.1\Newtonsoft.Json.dll
 C:\Users\lborjasz\source\repos\BlackJack\BlackJack\obj\Debug\netcoreapp3.1\BlackJackServer.csproj.CopyComplete
+C:\Users\anton\Desktop\Comunicaciones VS\Comunicaciones_II_BlackJack\BlackJack\bin\Debug\netcoreapp3.1\BlackJackServer.exe
+C:\Users\anton\Desktop\Comunicaciones VS\Comunicaciones_II_BlackJack\BlackJack\bin\Debug\netcoreapp3.1\BlackJackServer.deps.json
+C:\Users\anton\Desktop\Comunicaciones VS\Comunicaciones_II_BlackJack\BlackJack\bin\Debug\netcoreapp3.1\BlackJackServer.runtimeconfig.json
+C:\Users\anton\Desktop\Comunicaciones VS\Comunicaciones_II_BlackJack\BlackJack\bin\Debug\netcoreapp3.1\BlackJackServer.runtimeconfig.dev.json
+C:\Users\anton\Desktop\Comunicaciones VS\Comunicaciones_II_BlackJack\BlackJack\bin\Debug\netcoreapp3.1\BlackJackServer.dll
+C:\Users\anton\Desktop\Comunicaciones VS\Comunicaciones_II_BlackJack\BlackJack\bin\Debug\netcoreapp3.1\BlackJackServer.pdb
+C:\Users\anton\Desktop\Comunicaciones VS\Comunicaciones_II_BlackJack\BlackJack\bin\Debug\netcoreapp3.1\Newtonsoft.Json.dll
+C:\Users\anton\Desktop\Comunicaciones VS\Comunicaciones_II_BlackJack\BlackJack\obj\Debug\netcoreapp3.1\BlackJackServer.csproj.AssemblyReference.cache
+C:\Users\anton\Desktop\Comunicaciones VS\Comunicaciones_II_BlackJack\BlackJack\obj\Debug\netcoreapp3.1\BlackJackServer.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\anton\Desktop\Comunicaciones VS\Comunicaciones_II_BlackJack\BlackJack\obj\Debug\netcoreapp3.1\BlackJackServer.AssemblyInfoInputs.cache
+C:\Users\anton\Desktop\Comunicaciones VS\Comunicaciones_II_BlackJack\BlackJack\obj\Debug\netcoreapp3.1\BlackJackServer.AssemblyInfo.cs
+C:\Users\anton\Desktop\Comunicaciones VS\Comunicaciones_II_BlackJack\BlackJack\obj\Debug\netcoreapp3.1\BlackJackServer.csproj.CoreCompileInputs.cache
+C:\Users\anton\Desktop\Comunicaciones VS\Comunicaciones_II_BlackJack\BlackJack\obj\Debug\netcoreapp3.1\BlackJackServer.dll
+C:\Users\anton\Desktop\Comunicaciones VS\Comunicaciones_II_BlackJack\BlackJack\obj\Debug\netcoreapp3.1\BlackJackServer.pdb
+C:\Users\anton\Desktop\Comunicaciones VS\Comunicaciones_II_BlackJack\BlackJack\obj\Debug\netcoreapp3.1\BlackJackServer.genruntimeconfig.cache
