@@ -49,7 +49,7 @@ namespace BlackJackServer
             tcpListener = new TcpListener(IPAddress.Any, 5000);
             tcpListener.Start();
 
-            Console.WriteLine("Invita a otros jugadores a conectarse usando el Puerto: "+ 5000);
+            Console.WriteLine("Invita a otros jugadores a conectarse usando el Puerto: " + 5000 + " y el servidor emuler.ddns.net");
 
 
             System.Timers.Timer Timer = new System.Timers.Timer();
