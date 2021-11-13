@@ -22,13 +22,23 @@ namespace BlackJackServer
         private static List<Cartas> Mazo = new List<Cartas>();
         private static List<Ronda> RondasCrepier = new List<Ronda>();
         private static int NumRonda = 0;
-
+        private static DateTime dateNotificado;
         static void Main(string[] args)
         {
 
 
             GenerarMazo();
-            Console.WriteLine("BIENVENIDO A BLACK JACK - MODO SERVIDOR.");
+            Console.WriteLine(@".------..------..------..------..------..------..------..------..------.
+|B.--. ||L.--. ||A.--. ||C.--. ||K.--. ||J.--. ||A.--. ||C.--. ||K.--. |
+| :(): || :/\: || (\/) || :/\: || :/\: || :(): || (\/) || :/\: || :/\: |
+| ()() || (__) || :\/: || :\/: || :\/: || ()() || :\/: || :\/: || :\/: |
+| '--'B|| '--'L|| '--'A|| '--'C|| '--'K|| '--'J|| '--'A|| '--'C|| '--'K|
+`------'`------'`------'`------'`------'`------'`------'`------'`------'");
+            Console.WriteLine("");
+
+            Console.WriteLine("BIENVENIDO ERES LA CASA");
+            Console.WriteLine("");
+
             Console.WriteLine("Deberás completar ciertos datos para poder iniciar el juego");
             Console.WriteLine("");
 
@@ -39,7 +49,7 @@ namespace BlackJackServer
             tcpListener = new TcpListener(IPAddress.Any, 5000);
             tcpListener.Start();
 
-            Console.WriteLine("Invita a otros jugadores a conectarse usando el Puerto: "+ 5000+ " y la IP 127.0.0.1");
+            Console.WriteLine("Invita a otros jugadores a conectarse usando el Puerto: "+ 5000);
 
 
             System.Timers.Timer Timer = new System.Timers.Timer();
@@ -57,10 +67,7 @@ namespace BlackJackServer
                     cliente.tcpClient = tcpClient;
                     Clientes.Add(cliente);                   
                     Thread thread = new Thread(ClientListener);
-                    thread.Start(tcpClient);
-
-
-                
+                    thread.Start(tcpClient);                
             }
                         
 
@@ -208,11 +215,33 @@ namespace BlackJackServer
                 objMensajeEnviar = new Mensaje { Tipo = EnumMessage.ValorMensaje.NotificarTurno, Valor = NumRonda.ToString()};
                 mensajeEnviar = JsonConvert.SerializeObject(objMensajeEnviar);
                 Unicast(mensajeEnviar, cliente.tcpClient);
-                while (!Clientes[j].Rondas[NumRonda].Plantado){ }
-                Console.WriteLine("Jugador " + cliente.Usuario + " se ha plantado ");
-                objMensajeEnviar = new Mensaje { Tipo = EnumMessage.ValorMensaje.Comunicaciones, Valor = "Jugador " + cliente.Usuario + " se ha plantado " };
-                mensajeEnviar = JsonConvert.SerializeObject(objMensajeEnviar);
-                BroadCast(mensajeEnviar, cliente.tcpClient);
+                
+                dateNotificado = DateTime.Now;
+                
+                while (!Clientes[j].Rondas[NumRonda].Plantado && ( (DateTime.Now - dateNotificado).Seconds < 11)) { }
+
+                if (!Clientes[j].Rondas[NumRonda].Plantado)
+                {
+                    Clientes[j].Rondas[NumRonda].Plantado = true;
+
+                    Console.WriteLine("Jugador " + cliente.Usuario + " se ha plantado automaticamente luego de 10 segundos de espera");
+                    objMensajeEnviar = new Mensaje { Tipo = EnumMessage.ValorMensaje.Comunicaciones, Valor = "Jugador " + cliente.Usuario +" se ha plantado automaticamente luego de 10 segundos de espera" };
+                    mensajeEnviar = JsonConvert.SerializeObject(objMensajeEnviar);
+                    BroadCast(mensajeEnviar, cliente.tcpClient);
+
+                    Console.WriteLine("Jugador " + cliente.Usuario + " se te ha dado por plantado luego de 10 segundos de espera");
+                    objMensajeEnviar = new Mensaje { Tipo = EnumMessage.ValorMensaje.Comunicaciones, Valor = "Jugador " + cliente.Usuario + " se te ha dado por plantado luego de 10 segundos de espera" };
+                    mensajeEnviar = JsonConvert.SerializeObject(objMensajeEnviar);
+                    Unicast(mensajeEnviar, cliente.tcpClient);
+                }
+                else {
+                    Console.WriteLine("Jugador " + cliente.Usuario + " se ha plantado ");
+                    objMensajeEnviar = new Mensaje { Tipo = EnumMessage.ValorMensaje.Comunicaciones, Valor = "Jugador " + cliente.Usuario + " se ha plantado " };
+                    mensajeEnviar = JsonConvert.SerializeObject(objMensajeEnviar);
+                    BroadCast(mensajeEnviar, cliente.tcpClient);
+                }
+
+                
                 j++;
             }
 
@@ -459,8 +488,11 @@ namespace BlackJackServer
                         if (mensaje.Tipo == EnumMessage.ValorMensaje.Pedir)
                         {
                             //Console.WriteLine("El jugador " + Clientes.Find(x => x.tcpClient.Client.RemoteEndPoint == tcpClient.Client.RemoteEndPoint).Usuario + " ha pedido una nueva carta");
-
-                            PedirCarta(Clientes.Find(x => x.tcpClient.Client.RemoteEndPoint == tcpClient.Client.RemoteEndPoint));
+                            if(!Clientes.Find(x => x.tcpClient.Client.RemoteEndPoint == tcpClient.Client.RemoteEndPoint).Rondas[NumRonda].Plantado)
+                            {
+                                PedirCarta(Clientes.Find(x => x.tcpClient.Client.RemoteEndPoint == tcpClient.Client.RemoteEndPoint));
+                                dateNotificado = DateTime.Now;
+                            }
                         }
                         if (mensaje.Tipo == EnumMessage.ValorMensaje.Plantar) {
                             //Console.WriteLine("El jugador " + Clientes.Find(x => x.tcpClient.Client.RemoteEndPoint == tcpClient.Client.RemoteEndPoint).Usuario + " se ha plantado");

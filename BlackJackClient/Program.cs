@@ -19,10 +19,20 @@ namespace BlackJackClient
         {
             try
             {
-                Console.WriteLine("BIENVENIDO A BLACK JACK - MODO JUGADOR.");
+                Console.WriteLine(@".------..------..------..------..------..------..------..------..------.
+|B.--. ||L.--. ||A.--. ||C.--. ||K.--. ||J.--. ||A.--. ||C.--. ||K.--. |
+| :(): || :/\: || (\/) || :/\: || :/\: || :(): || (\/) || :/\: || :/\: |
+| ()() || (__) || :\/: || :\/: || :\/: || ()() || :\/: || :\/: || :\/: |
+| '--'B|| '--'L|| '--'A|| '--'C|| '--'K|| '--'J|| '--'A|| '--'C|| '--'K|
+`------'`------'`------'`------'`------'`------'`------'`------'`------'");
+                Console.WriteLine("");
+
+                Console.WriteLine("BIENVENIDO JUGADOR");
+                Console.WriteLine("");
+
                 Console.WriteLine("Deberás completar ciertos datos para poder iniciar el juego");
                 Console.WriteLine("");
-                Console.WriteLine("Ingresa dirección IP o DNS del servidor al cual deseas conectarte (incluyendo http:\\): ");
+                Console.WriteLine("Ingresa dirección IP o DNS del servidor al cual deseas conectarte: ");
                 string ip = Console.ReadLine();
                 Console.WriteLine("Ingresa el puerto del servidor: ");
                 string puerto = Console.ReadLine();
