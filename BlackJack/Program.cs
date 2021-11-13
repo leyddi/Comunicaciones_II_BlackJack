@@ -447,72 +447,89 @@ namespace BlackJackServer
 
             while (true)
             {
-                if (tcpClient.Connected)
-                {
-                    string readerText = reader.ReadLine();
-                    if (!string.IsNullOrEmpty(readerText))
+
+                try {
+
+                    if (tcpClient.Connected)
                     {
-
-                        Mensaje mensaje = JsonConvert.DeserializeObject<Mensaje>(readerText);
-
-                        if (mensaje.Tipo == EnumMessage.ValorMensaje.SolicitarUnirse)
+                        string readerText = reader.ReadLine();
+                        if (!string.IsNullOrEmpty(readerText))
                         {
-                            String[] valores = mensaje.Valor.Split("##");
-                            if (valores[1].ToString() != Mesa)
-                            {
-                                Mensaje objMensajeEnviar = new Mensaje { Tipo = EnumMessage.ValorMensaje.NoAdmitido };
-                                string mensajeEnviar = JsonConvert.SerializeObject(objMensajeEnviar);
-                                Unicast(mensajeEnviar, tcpClient);
-                                Console.WriteLine("Un cliente ha intentado conectarse pero no ha enviado la mesa correcta");
-                            }
-                            else
-                            {
-                                Cliente cli = Clientes.Find(x => x.tcpClient.Client.RemoteEndPoint == tcpClient.Client.RemoteEndPoint);
 
-                                if (cli != null && cli.Usuario == null)
+                            Mensaje mensaje = JsonConvert.DeserializeObject<Mensaje>(readerText);
+
+                            if (mensaje.Tipo == EnumMessage.ValorMensaje.SolicitarUnirse)
+                            {
+                                String[] valores = mensaje.Valor.Split("##");
+                                if (valores[1].ToString() != Mesa)
                                 {
-                                    Clientes.Find(x => x.tcpClient.Client.RemoteEndPoint == tcpClient.Client.RemoteEndPoint).Usuario = valores[0];
-                                    Mensaje objMensajeEnviar = new Mensaje { Tipo = EnumMessage.ValorMensaje.Admitido };
+                                    Mensaje objMensajeEnviar = new Mensaje { Tipo = EnumMessage.ValorMensaje.NoAdmitido };
                                     string mensajeEnviar = JsonConvert.SerializeObject(objMensajeEnviar);
                                     Unicast(mensajeEnviar, tcpClient);
+                                    Console.WriteLine("Un cliente ha intentado conectarse pero no ha enviado la mesa correcta");
+                                }
+                                else
+                                {
+                                    Cliente cli = Clientes.Find(x => x.tcpClient.Client.RemoteEndPoint == tcpClient.Client.RemoteEndPoint);
 
-                                    objMensajeEnviar = new Mensaje { Tipo = EnumMessage.ValorMensaje.Comunicaciones, Valor = "El jugador " + valores[0] + " se ha unido a la mesa" };
-                                    mensajeEnviar = JsonConvert.SerializeObject(objMensajeEnviar);
-                                    Console.WriteLine("El jugador " + valores[0] + " se ha unido a la mesa");
-                                    BroadCast(mensajeEnviar, tcpClient);
-
-                                    if (Clientes.Count == 2)
+                                    if (cli != null && cli.Usuario == null)
                                     {
-                                        Console.WriteLine("Se cierra la mesa en 20 Segundos:");
-                                        fechaPrevioInicio = DateTime.Now;
-                                        aTimer.Interval = 21000;
+                                        Clientes.Find(x => x.tcpClient.Client.RemoteEndPoint == tcpClient.Client.RemoteEndPoint).Usuario = valores[0];
+                                        Mensaje objMensajeEnviar = new Mensaje { Tipo = EnumMessage.ValorMensaje.Admitido };
+                                        string mensajeEnviar = JsonConvert.SerializeObject(objMensajeEnviar);
+                                        Unicast(mensajeEnviar, tcpClient);
 
-                                        // Hook up the Elapsed event for the timer. 
-                                        aTimer.Elapsed += OnTimedEvent;
-                                        // Start the timer
-                                        aTimer.Enabled = true;
+                                        objMensajeEnviar = new Mensaje { Tipo = EnumMessage.ValorMensaje.Comunicaciones, Valor = "El jugador " + valores[0] + " se ha unido a la mesa" };
+                                        mensajeEnviar = JsonConvert.SerializeObject(objMensajeEnviar);
+                                        Console.WriteLine("El jugador " + valores[0] + " se ha unido a la mesa");
+                                        BroadCast(mensajeEnviar, tcpClient);
+
+                                        if (Clientes.Count == 2)
+                                        {
+                                            Console.WriteLine("Se cierra la mesa en 20 Segundos:");
+                                            fechaPrevioInicio = DateTime.Now;
+                                            aTimer.Interval = 21000;
+
+                                            // Hook up the Elapsed event for the timer. 
+                                            aTimer.Elapsed += OnTimedEvent;
+                                            // Start the timer
+                                            aTimer.Enabled = true;
+
+                                        }
 
                                     }
-
                                 }
                             }
-                        }
-                        if (mensaje.Tipo == EnumMessage.ValorMensaje.Pedir)
-                        {
-                            //Console.WriteLine("El jugador " + Clientes.Find(x => x.tcpClient.Client.RemoteEndPoint == tcpClient.Client.RemoteEndPoint).Usuario + " ha pedido una nueva carta");
-                            if(!Clientes.Find(x => x.tcpClient.Client.RemoteEndPoint == tcpClient.Client.RemoteEndPoint).Rondas[NumRonda].Plantado)
+                            if (mensaje.Tipo == EnumMessage.ValorMensaje.Pedir)
                             {
-                                PedirCarta(Clientes.Find(x => x.tcpClient.Client.RemoteEndPoint == tcpClient.Client.RemoteEndPoint));
-                                dateNotificado = DateTime.Now;
+                                //Console.WriteLine("El jugador " + Clientes.Find(x => x.tcpClient.Client.RemoteEndPoint == tcpClient.Client.RemoteEndPoint).Usuario + " ha pedido una nueva carta");
+                                if (!Clientes.Find(x => x.tcpClient.Client.RemoteEndPoint == tcpClient.Client.RemoteEndPoint).Rondas[NumRonda].Plantado)
+                                {
+                                    PedirCarta(Clientes.Find(x => x.tcpClient.Client.RemoteEndPoint == tcpClient.Client.RemoteEndPoint));
+                                    dateNotificado = DateTime.Now;
+                                }
+                            }
+                            if (mensaje.Tipo == EnumMessage.ValorMensaje.Plantar)
+                            {
+                                //Console.WriteLine("El jugador " + Clientes.Find(x => x.tcpClient.Client.RemoteEndPoint == tcpClient.Client.RemoteEndPoint).Usuario + " se ha plantado");
+
+                                Clientes.Find(x => x.tcpClient.Client.RemoteEndPoint == tcpClient.Client.RemoteEndPoint).Rondas[NumRonda].Plantado = true;
                             }
                         }
-                        if (mensaje.Tipo == EnumMessage.ValorMensaje.Plantar) {
-                            //Console.WriteLine("El jugador " + Clientes.Find(x => x.tcpClient.Client.RemoteEndPoint == tcpClient.Client.RemoteEndPoint).Usuario + " se ha plantado");
+                    }
 
-                            Clientes.Find(x => x.tcpClient.Client.RemoteEndPoint == tcpClient.Client.RemoteEndPoint).Rondas[NumRonda].Plantado = true;
+                }
+                catch (Exception) {
+                    for (int p = 0; p < Clientes.Count(); p++)
+                    {
+                        if (!Clientes[p].tcpClient.Connected)
+                        {
+                            Console.WriteLine("EL JUGADOR:  " + Clientes[p].Usuario + " ABANDONO EL JUEGO");
+                            Clientes.RemoveAt(p);
                         }
                     }
                 }
+
             }
         }
 
