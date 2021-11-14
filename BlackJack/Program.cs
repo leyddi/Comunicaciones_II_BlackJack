@@ -84,24 +84,32 @@ namespace BlackJackServer
                 Ronda();
 
                 Console.WriteLine("Ha Finalizado las rondas, se realizará el conteo de puntos");
-                objMensajeEnviar = new Mensaje { Tipo = EnumMessage.ValorMensaje.Comunicaciones, Valor = "Inicia el Juego " };
+                objMensajeEnviar = new Mensaje { Tipo = EnumMessage.ValorMensaje.Comunicaciones, Valor = "Ha Finalizado las rondas, se realizará el conteo de puntos" };
                 mensajeEnviar = JsonConvert.SerializeObject(objMensajeEnviar);
                 BroadCastAll(mensajeEnviar);
 
 
                 EncontrarGanador();
 
-                //Termina el proceso de los clientes
-                foreach (Process proceso in Process.GetProcesses())
-                {
-                    if (proceso.ProcessName == "BlackJackClient")
-                    {
-                        proceso.Kill();
-                    }
-                }
 
-                //Termina el proceso del servidor
-                Environment.Exit(0);
+                
+                objMensajeEnviar = new Mensaje { Tipo = EnumMessage.ValorMensaje.FinJuego, Valor = null };
+                mensajeEnviar = JsonConvert.SerializeObject(objMensajeEnviar);
+                BroadCastAll(mensajeEnviar);
+
+                Console.ReadKey(true);
+
+                ////Termina el proceso de los clientes
+                //foreach (Process proceso in Process.GetProcesses())
+                //{
+                //    if (proceso.ProcessName == "BlackJackClient")
+                //    {
+                //        proceso.Kill();
+                //    }
+                //}
+
+                ////Termina el proceso del servidor
+                //Environment.Exit(0);
 
             }
         }

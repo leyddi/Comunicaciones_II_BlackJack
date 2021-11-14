@@ -17,8 +17,7 @@ namespace BlackJackClient
             NotificarTurno = 5,
             Pedir = 6,
             Plantar = 7,
-            Ganador = 8,
-            Perdedor = 9,
+            FinJuego = 8,
             Comunicaciones = 99
 
         }

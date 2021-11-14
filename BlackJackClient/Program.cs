@@ -167,12 +167,20 @@ namespace BlackJackClient
                         sWriter.WriteLine(JsonConvert.SerializeObject(mensajeEnviar));
                         sWriter.Flush();
                     }
+                    if (mensaje.Tipo == EnumMessage.ValorMensaje.FinJuego)
+                    {
+                        Console.WriteLine("Presione cualquier tecla para finalizar el juego");
+                        Console.ReadLine();
+                        break;
+                    }
                 }
+
                 catch (Exception e)
                 {
-                    Console.WriteLine(e.Message);
+                    //Console.WriteLine(e.Message);
                     break;
                 }
+
             }
         }
     }

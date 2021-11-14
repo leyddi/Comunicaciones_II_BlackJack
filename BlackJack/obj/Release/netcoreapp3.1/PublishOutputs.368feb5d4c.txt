@@ -1,0 +1,6 @@
+C:\Users\lborjasz\Desktop\ServidorBJ\BlackJackServer.exe
+C:\Users\lborjasz\Desktop\ServidorBJ\BlackJackServer.dll
+C:\Users\lborjasz\Desktop\ServidorBJ\BlackJackServer.deps.json
+C:\Users\lborjasz\Desktop\ServidorBJ\BlackJackServer.runtimeconfig.json
+C:\Users\lborjasz\Desktop\ServidorBJ\BlackJackServer.pdb
+C:\Users\lborjasz\Desktop\ServidorBJ\Newtonsoft.Json.dll
