@@ -12,3 +12,4 @@ C:\Users\lborjasz\source\repos\BlackJack\BlackJack\obj\Release\netcoreapp3.1\Bla
 C:\Users\lborjasz\source\repos\BlackJack\BlackJack\obj\Release\netcoreapp3.1\BlackJackServer.dll
 C:\Users\lborjasz\source\repos\BlackJack\BlackJack\obj\Release\netcoreapp3.1\BlackJackServer.pdb
 C:\Users\lborjasz\source\repos\BlackJack\BlackJack\obj\Release\netcoreapp3.1\BlackJackServer.genruntimeconfig.cache
+C:\Users\lborjasz\source\repos\BlackJack\BlackJack\obj\Release\netcoreapp3.1\BlackJackServer.csprojAssemblyReference.cache
